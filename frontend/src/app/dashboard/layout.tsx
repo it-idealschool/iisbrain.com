@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -52,9 +52,9 @@ export default function DashboardLayout({
     <div className="dashboard-shell">
       <aside className="dashboard-sidebar">
         <div className="dashboard-sidebar__brand">
-          <span className="dashboard-sidebar__crest">A</span>
+          <span className="dashboard-sidebar__crest">I</span>
           <div>
-            <p className="dashboard-sidebar__title">AASR</p>
+            <p className="dashboard-sidebar__title">IIS Brain</p>
             <p className="dashboard-sidebar__subtitle">Staffing Review</p>
           </div>
         </div>
