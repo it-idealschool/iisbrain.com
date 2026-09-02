@@ -7,9 +7,10 @@ import {
   ADMIN_POSITION_CHOICES,
   ADMIN_POSITION_LABELS,
   GENDER_CHOICES,
-  YES_NO_CHOICES,
   SPONSOR_CHOICES,
   SPONSOR_LABELS,
+  QUALIFICATION_CHOICES,
+  QUALIFICATION_LABELS,
   createAdminStaff,
   updateAdminStaff,
 } from "@/lib/adminStaff";
@@ -20,6 +21,7 @@ import {
   FastDateField,
   ShiftField,
   PhotoUploadField,
+  FileUploadField,
 } from "@/components/AasrFormFields";
 
 const emptyStaff: AdminStaff = {
@@ -27,6 +29,7 @@ const emptyStaff: AdminStaff = {
   position: ADMIN_POSITION_CHOICES[0],
   photo_url: "",
   qatar_id: "",
+  qatar_id_expiry: "",
   sponsor_status: "",
   home_country_number: "",
   contact_number: "",
@@ -37,14 +40,9 @@ const emptyStaff: AdminStaff = {
   age: "",
   gender: "",
   shift: "",
-  ug_qualification: "",
-  pg_qualification: "",
-  other_diploma: "",
-  bed_qualified: "",
-  bed_details: "",
-  med_qualified: "",
-  med_details: "",
-  phd_qualified: "",
+  qualification: "",
+  extra_qualification: "",
+  certificate_url: "",
   notes: "",
 };
 
@@ -123,6 +121,7 @@ export default function AdminStaffForm({ staffId, initialData }: Props) {
           onChange={(v) => set("position", v)}
         />
         <TextField label="Qatar ID" value={form.qatar_id || ""} onChange={(v) => set("qatar_id", v)} />
+        <FastDateField label="Qatar ID Expiry Date" value={form.qatar_id_expiry || ""} onChange={(v) => set("qatar_id_expiry", v)} />
         <SelectField
           label="Sponsor Status"
           value={form.sponsor_status || ""}
@@ -142,14 +141,15 @@ export default function AdminStaffForm({ staffId, initialData }: Props) {
       </Section>
 
       <Section title="Qualifications">
-        <TextField label="UG Qualification" value={form.ug_qualification || ""} onChange={(v) => set("ug_qualification", v)} />
-        <TextField label="PG Qualification" value={form.pg_qualification || ""} onChange={(v) => set("pg_qualification", v)} />
-        <TextField label="Other Diploma" value={form.other_diploma || ""} onChange={(v) => set("other_diploma", v)} />
-        <SelectField label="B.Ed Qualified" value={form.bed_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("bed_qualified", v)} />
-        <TextField label="B.Ed Details" value={form.bed_details || ""} onChange={(v) => set("bed_details", v)} />
-        <SelectField label="M.Ed Qualified" value={form.med_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("med_qualified", v)} />
-        <TextField label="M.Ed Details" value={form.med_details || ""} onChange={(v) => set("med_details", v)} />
-        <SelectField label="PhD Qualified" value={form.phd_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("phd_qualified", v)} />
+        <SelectField
+          label="Qualification"
+          value={form.qualification || ""}
+          choices={QUALIFICATION_CHOICES}
+          labels={QUALIFICATION_LABELS}
+          onChange={(v) => set("qualification", v)}
+        />
+        <TextField label="Extra Qualifications" value={form.extra_qualification || ""} onChange={(v) => set("extra_qualification", v)} />
+        <FileUploadField label="Certificate Upload" value={form.certificate_url || ""} onChange={(v) => set("certificate_url", v)} />
       </Section>
 
       <Section title="Notes">

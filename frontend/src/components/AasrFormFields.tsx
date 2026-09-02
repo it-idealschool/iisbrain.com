@@ -401,3 +401,98 @@ export function PhotoUploadField({
     </label>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* Generic file upload — reads any file (image or PDF, e.g. a          */
+/* certificate) and stores it as a base64 data-URL string, same        */
+/* storage approach as PhotoUploadField (no extra backend media        */
+/* config needed). Shows the chosen file name instead of a preview.    */
+/* ------------------------------------------------------------------ */
+
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("Could not read file"));
+    reader.readAsDataURL(file);
+  });
+}
+
+export function FileUploadField({
+  label = "Certificate Upload",
+  value,
+  onChange,
+  accept = "image/*,application/pdf",
+  maxSizeMb = 5,
+}: {
+  label?: string;
+  value: string;
+  onChange: (v: string) => void;
+  accept?: string;
+  maxSizeMb?: number;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleFile(file: File | undefined) {
+    if (!file) return;
+    if (file.size > maxSizeMb * 1024 * 1024) {
+      setError(`File is too large (max ${maxSizeMb}MB).`);
+      return;
+    }
+    setError("");
+    setBusy(true);
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      onChange(dataUrl);
+      setFileName(file.name);
+    } catch {
+      setError("Could not process that file.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <label className="aasr-label">
+      <span className="aasr-label-text">{label}</span>
+      <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
+        <button
+          type="button"
+          className="aasr-btn aasr-btn-ghost aasr-btn-sm"
+          onClick={() => inputRef.current?.click()}
+          disabled={busy}
+        >
+          {busy ? "Processing..." : value ? "Replace File" : "Upload File"}
+        </button>
+        {value && (
+          <>
+            <span style={{ fontSize: "0.8rem", color: "var(--aasr-muted)" }}>
+              {fileName || "File attached"}
+            </span>
+            <button
+              type="button"
+              className="aasr-btn aasr-btn-ghost aasr-btn-sm"
+              onClick={() => {
+                onChange("");
+                setFileName("");
+              }}
+            >
+              Remove
+            </button>
+          </>
+        )}
+        {error && <span style={{ fontSize: "0.78rem", color: "var(--aasr-error)" }}>{error}</span>}
+        <input
+          ref={inputRef}
+          type="file"
+          accept={accept}
+          hidden
+          onChange={(e) => handleFile(e.target.files?.[0])}
+        />
+      </div>
+    </label>
+  );
+}

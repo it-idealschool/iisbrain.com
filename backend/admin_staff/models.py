@@ -22,6 +22,13 @@ SPONSOR_CHOICES = [('SPONSORED', 'Sponsored'), ('NON_SPONSORED', 'Non-Sponsored'
 
 SHIFT_CHOICES = [('MORNING', 'Morning'), ('EVENING', 'Evening'), ('BOTH', 'Both')]
 
+QUALIFICATION_CHOICES = [
+    ('PLUS_TWO', '+2'),
+    ('DIPLOMA', 'Diploma'),
+    ('GRADUATED', 'Graduated'),
+    ('POST_GRADUATED', 'Post Graduated'),
+]
+
 
 class AdminStaff(models.Model):
     """An individual administrative / management staff member."""
@@ -31,6 +38,7 @@ class AdminStaff(models.Model):
     position = models.CharField(max_length=50, choices=POSITION_CHOICES)
     photo_url = models.TextField(blank=True)  # data-URL (base64) or hosted image URL
     qatar_id = models.CharField(max_length=100, blank=True)
+    qatar_id_expiry = models.DateField(null=True, blank=True)
     sponsor_status = models.CharField(max_length=20, choices=SPONSOR_CHOICES, blank=True)
     home_country_number = models.CharField(max_length=100, blank=True)
     contact_number = models.CharField(max_length=100, blank=True)
@@ -44,14 +52,9 @@ class AdminStaff(models.Model):
     shift = models.CharField(max_length=20, choices=SHIFT_CHOICES, blank=True)
 
     # Qualifications
-    ug_qualification = models.CharField(max_length=255, blank=True)
-    pg_qualification = models.CharField(max_length=255, blank=True)
-    other_diploma = models.CharField(max_length=255, blank=True)
-    bed_qualified = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
-    bed_details = models.CharField(max_length=255, blank=True)
-    med_qualified = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
-    med_details = models.CharField(max_length=255, blank=True)
-    phd_qualified = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
+    qualification = models.CharField(max_length=20, choices=QUALIFICATION_CHOICES, blank=True)
+    extra_qualification = models.CharField(max_length=255, blank=True)
+    certificate_url = models.TextField(blank=True)  # data-URL (base64) of the uploaded certificate
 
     notes = models.TextField(blank=True)
 

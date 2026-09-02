@@ -37,12 +37,27 @@ export const SPONSOR_LABELS: Record<string, string> = {
   NON_SPONSORED: "Non-Sponsored",
 };
 
+export const QUALIFICATION_CHOICES = [
+  "PLUS_TWO",
+  "DIPLOMA",
+  "GRADUATED",
+  "POST_GRADUATED",
+];
+
+export const QUALIFICATION_LABELS: Record<string, string> = {
+  PLUS_TWO: "+2",
+  DIPLOMA: "Diploma",
+  GRADUATED: "Graduated",
+  POST_GRADUATED: "Post Graduated",
+};
+
 export interface AdminStaff {
   id?: string;
   name: string;
   position: string;
   photo_url?: string;
   qatar_id?: string;
+  qatar_id_expiry?: string;
   sponsor_status?: string;
   home_country_number?: string;
   contact_number?: string;
@@ -53,14 +68,9 @@ export interface AdminStaff {
   age?: string;
   gender?: string;
   shift?: string;
-  ug_qualification?: string;
-  pg_qualification?: string;
-  other_diploma?: string;
-  bed_qualified?: string;
-  bed_details?: string;
-  med_qualified?: string;
-  med_details?: string;
-  phd_qualified?: string;
+  qualification?: string;
+  extra_qualification?: string;
+  certificate_url?: string;
   notes?: string;
 }
 

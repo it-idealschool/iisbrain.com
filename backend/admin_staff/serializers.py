@@ -6,11 +6,10 @@ class AdminStaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdminStaff
         fields = [
-            'id', 'name', 'position', 'photo_url', 'qatar_id', 'sponsor_status',
+            'id', 'name', 'position', 'photo_url', 'qatar_id', 'qatar_id_expiry', 'sponsor_status',
             'home_country_number', 'contact_number', 'email',
             'doj', 'contract_expiry', 'dob', 'age', 'gender', 'shift',
-            'ug_qualification', 'pg_qualification', 'other_diploma',
-            'bed_qualified', 'bed_details', 'med_qualified', 'med_details', 'phd_qualified',
+            'qualification', 'extra_qualification', 'certificate_url',
             'notes', 'created_at', 'updated_at',
         ]
 
