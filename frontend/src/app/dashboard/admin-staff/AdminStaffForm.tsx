@@ -1,0 +1,169 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  AdminStaff,
+  ADMIN_POSITION_CHOICES,
+  ADMIN_POSITION_LABELS,
+  GENDER_CHOICES,
+  YES_NO_CHOICES,
+  SPONSOR_CHOICES,
+  SPONSOR_LABELS,
+  createAdminStaff,
+  updateAdminStaff,
+} from "@/lib/adminStaff";
+import {
+  Section,
+  TextField,
+  SelectField,
+  FastDateField,
+  ShiftField,
+  PhotoUploadField,
+} from "@/components/AasrFormFields";
+
+const emptyStaff: AdminStaff = {
+  name: "",
+  position: ADMIN_POSITION_CHOICES[0],
+  photo_url: "",
+  qatar_id: "",
+  sponsor_status: "",
+  home_country_number: "",
+  contact_number: "",
+  email: "",
+  doj: "",
+  contract_expiry: "",
+  dob: "",
+  age: "",
+  gender: "",
+  shift: "",
+  ug_qualification: "",
+  pg_qualification: "",
+  other_diploma: "",
+  bed_qualified: "",
+  bed_details: "",
+  med_qualified: "",
+  med_details: "",
+  phd_qualified: "",
+  notes: "",
+};
+
+interface Props {
+  staffId?: string;
+  initialData?: AdminStaff;
+}
+
+export default function AdminStaffForm({ staffId, initialData }: Props) {
+  const router = useRouter();
+  const isEdit = Boolean(staffId);
+
+  const [form, setForm] = useState<AdminStaff>(initialData || emptyStaff);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  function set(field: keyof AdminStaff, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    if (!form.name.trim()) {
+      setError("Name is required.");
+      return;
+    }
+    setSaving(true);
+    try {
+      if (isEdit && staffId) {
+        await updateAdminStaff(staffId, form);
+      } else {
+        await createAdminStaff(form);
+      }
+      router.push("/dashboard/admin-staff");
+    } catch (err: any) {
+      const data = err.response?.data;
+      setError(
+        typeof data === "string"
+          ? data
+          : data
+          ? JSON.stringify(data)
+          : "Save failed. Please check the form and try again."
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="aasr-page aasr-page--narrow" style={{ padding: 0 }}>
+      {error && (
+        <p
+          style={{
+            color: "var(--aasr-error)",
+            background: "var(--aasr-error-bg)",
+            border: "1px solid var(--aasr-error)",
+            borderRadius: "0.45rem",
+            padding: "0.75rem",
+            fontSize: "0.85rem",
+            marginBottom: "1.25rem",
+          }}
+        >
+          {error}
+        </p>
+      )}
+
+      <Section title="Personal Details">
+        <PhotoUploadField value={form.photo_url || ""} onChange={(v) => set("photo_url", v)} />
+        <TextField label="Name" value={form.name} onChange={(v) => set("name", v)} required />
+        <SelectField
+          label="Position"
+          value={form.position}
+          choices={ADMIN_POSITION_CHOICES as unknown as string[]}
+          labels={ADMIN_POSITION_LABELS}
+          onChange={(v) => set("position", v)}
+        />
+        <TextField label="Qatar ID" value={form.qatar_id || ""} onChange={(v) => set("qatar_id", v)} />
+        <SelectField
+          label="Sponsor Status"
+          value={form.sponsor_status || ""}
+          choices={SPONSOR_CHOICES}
+          labels={SPONSOR_LABELS}
+          onChange={(v) => set("sponsor_status", v)}
+        />
+        <TextField label="Home Country Number" value={form.home_country_number || ""} onChange={(v) => set("home_country_number", v)} />
+        <TextField label="Contact Number" value={form.contact_number || ""} onChange={(v) => set("contact_number", v)} />
+        <TextField label="Email" type="email" value={form.email || ""} onChange={(v) => set("email", v)} />
+        <FastDateField label="Date of Joining" value={form.doj || ""} onChange={(v) => set("doj", v)} />
+        <FastDateField label="Contract Expiry" value={form.contract_expiry || ""} onChange={(v) => set("contract_expiry", v)} />
+        <FastDateField label="Date of Birth" value={form.dob || ""} onChange={(v) => set("dob", v)} minYear={1950} />
+        <TextField label="Age" value={form.age || ""} onChange={(v) => set("age", v)} />
+        <SelectField label="Gender" value={form.gender || ""} choices={GENDER_CHOICES} onChange={(v) => set("gender", v)} />
+        <ShiftField value={form.shift || ""} onChange={(v) => set("shift", v)} />
+      </Section>
+
+      <Section title="Qualifications">
+        <TextField label="UG Qualification" value={form.ug_qualification || ""} onChange={(v) => set("ug_qualification", v)} />
+        <TextField label="PG Qualification" value={form.pg_qualification || ""} onChange={(v) => set("pg_qualification", v)} />
+        <TextField label="Other Diploma" value={form.other_diploma || ""} onChange={(v) => set("other_diploma", v)} />
+        <SelectField label="B.Ed Qualified" value={form.bed_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("bed_qualified", v)} />
+        <TextField label="B.Ed Details" value={form.bed_details || ""} onChange={(v) => set("bed_details", v)} />
+        <SelectField label="M.Ed Qualified" value={form.med_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("med_qualified", v)} />
+        <TextField label="M.Ed Details" value={form.med_details || ""} onChange={(v) => set("med_details", v)} />
+        <SelectField label="PhD Qualified" value={form.phd_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("phd_qualified", v)} />
+      </Section>
+
+      <Section title="Notes">
+        <TextField label="Notes" value={form.notes || ""} onChange={(v) => set("notes", v)} />
+      </Section>
+
+      <div className="aasr-form-footer">
+        <button type="submit" disabled={saving} className="aasr-btn aasr-btn-primary">
+          {saving ? "Saving..." : isEdit ? "Save Changes" : "Register Admin Staff"}
+        </button>
+        <button type="button" onClick={() => router.push("/dashboard/admin-staff")} className="aasr-btn aasr-btn-secondary">
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}

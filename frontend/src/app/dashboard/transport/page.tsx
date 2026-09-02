@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getMe } from "@/lib/auth";
 import {
@@ -245,6 +246,11 @@ export default function TransportPage() {
             Fleet roles, headcount targets, and route-level summary numbers.
           </p>
         </div>
+        <div className="aasr-actions">
+          <Link href="/dashboard/transport/new" className="aasr-btn aasr-btn-primary">
+            + Add Staff Member
+          </Link>
+        </div>
       </div>
 
       {error && <p className="aasr-error-banner">{error}</p>}
@@ -373,10 +379,9 @@ export default function TransportPage() {
             </div>
           </section>
 
-          <section>
-            <h2 className="aasr-section-title">
-              {editingId ? "Edit Staff Member" : "Add Staff Member"}
-            </h2>
+          {editingId && (
+          <section className="aasr-section">
+            <h2 className="aasr-section-title">Edit Staff Member</h2>
             <form onSubmit={handleSubmit} className="aasr-filter-bar">
               <div className="aasr-field-grid">
                 <PhotoUploadField value={form.photo_url || ""} onChange={(v) => set("photo_url", v)} />
@@ -423,16 +428,17 @@ export default function TransportPage() {
               {formError && <p className="aasr-error-banner" style={{ marginTop: "0.9rem", marginBottom: 0 }}>{formError}</p>}
               <div className="aasr-filter-row">
                 <button type="submit" disabled={saving} className="aasr-btn aasr-btn-primary aasr-btn-sm">
-                  {saving ? "Saving…" : editingId ? "Save Changes" : "+ Add Staff Member"}
+                  {saving ? "Saving…" : "Save Changes"}
                 </button>
-                {editingId && (
-                  <button type="button" onClick={cancelEdit} className="aasr-btn aasr-btn-ghost aasr-btn-sm">
-                    Cancel
-                  </button>
-                )}
+                <button type="button" onClick={cancelEdit} className="aasr-btn aasr-btn-ghost aasr-btn-sm">
+                  Cancel
+                </button>
               </div>
             </form>
+          </section>
+          )}
 
+          <section className="aasr-section">
             {staff.length === 0 ? (
               <div className="aasr-table-wrap"><p className="aasr-empty-state">No transport staff added yet.</p></div>
             ) : (
