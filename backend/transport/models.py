@@ -15,6 +15,13 @@ SPONSOR_CHOICES = [('SPONSORED', 'Sponsored'), ('NON_SPONSORED', 'Non-Sponsored'
 
 SHIFT_CHOICES = [('MORNING', 'Morning'), ('EVENING', 'Evening'), ('BOTH', 'Both')]
 
+QUALIFICATION_CHOICES = [
+    ('PLUS_TWO', '+2'),
+    ('DIPLOMA', 'Diploma'),
+    ('GRADUATED', 'Graduated'),
+    ('POST_GRADUATED', 'Post Graduated'),
+]
+
 
 class TransportStaff(models.Model):
     """An individual transport staff member (coordinator, driver, attendant)."""
@@ -29,6 +36,7 @@ class TransportStaff(models.Model):
     contact_number = models.CharField(max_length=100, blank=True)
     email = models.EmailField(blank=True)
     license_number = models.CharField(max_length=100, blank=True)
+    bus_number = models.CharField(max_length=100, blank=True)
     route = models.CharField(max_length=100, blank=True)
     is_substitute = models.BooleanField(default=False)
 
@@ -40,14 +48,9 @@ class TransportStaff(models.Model):
     shift = models.CharField(max_length=20, choices=SHIFT_CHOICES, blank=True)
 
     # Qualifications
-    ug_qualification = models.CharField(max_length=255, blank=True)
-    pg_qualification = models.CharField(max_length=255, blank=True)
-    other_diploma = models.CharField(max_length=255, blank=True)
-    bed_qualified = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
-    bed_details = models.CharField(max_length=255, blank=True)
-    med_qualified = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
-    med_details = models.CharField(max_length=255, blank=True)
-    phd_qualified = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
+    qualification = models.CharField(max_length=20, choices=QUALIFICATION_CHOICES, blank=True)
+    extra_qualification = models.CharField(max_length=255, blank=True)
+    certificate_url = models.TextField(blank=True)  # data-URL (base64) of the uploaded certificate
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

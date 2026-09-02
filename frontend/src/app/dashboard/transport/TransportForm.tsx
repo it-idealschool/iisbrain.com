@@ -7,9 +7,10 @@ import {
   TRANSPORT_ROLE_CHOICES,
   TRANSPORT_ROLE_LABELS,
   GENDER_CHOICES,
-  YES_NO_CHOICES,
   SPONSOR_CHOICES,
   SPONSOR_LABELS,
+  QUALIFICATION_CHOICES,
+  QUALIFICATION_LABELS,
   createTransportStaff,
   updateTransportStaff,
 } from "@/lib/transport";
@@ -20,6 +21,7 @@ import {
   FastDateField,
   ShiftField,
   PhotoUploadField,
+  FileUploadField,
 } from "@/components/AasrFormFields";
 
 const emptyStaff: TransportStaff = {
@@ -32,6 +34,7 @@ const emptyStaff: TransportStaff = {
   contact_number: "",
   email: "",
   license_number: "",
+  bus_number: "",
   route: "",
   is_substitute: false,
   doj: "",
@@ -40,14 +43,9 @@ const emptyStaff: TransportStaff = {
   age: "",
   gender: "",
   shift: "",
-  ug_qualification: "",
-  pg_qualification: "",
-  other_diploma: "",
-  bed_qualified: "",
-  bed_details: "",
-  med_qualified: "",
-  med_details: "",
-  phd_qualified: "",
+  qualification: "",
+  extra_qualification: "",
+  certificate_url: "",
 };
 
 interface Props {
@@ -136,6 +134,7 @@ export default function TransportForm({ staffId, initialData }: Props) {
         <TextField label="Contact Number" value={form.contact_number || ""} onChange={(v) => set("contact_number", v)} />
         <TextField label="Email" type="email" value={form.email || ""} onChange={(v) => set("email", v)} />
         <TextField label="License Number (drivers)" value={form.license_number || ""} onChange={(v) => set("license_number", v)} />
+        <TextField label="Bus Number" value={form.bus_number || ""} onChange={(v) => set("bus_number", v)} />
         <TextField label="Route" value={form.route || ""} onChange={(v) => set("route", v)} />
         <FastDateField label="Date of Joining" value={form.doj || ""} onChange={(v) => set("doj", v)} />
         <FastDateField label="Contract Expiry" value={form.contract_expiry || ""} onChange={(v) => set("contract_expiry", v)} />
@@ -146,14 +145,15 @@ export default function TransportForm({ staffId, initialData }: Props) {
       </Section>
 
       <Section title="Qualifications">
-        <TextField label="UG Qualification" value={form.ug_qualification || ""} onChange={(v) => set("ug_qualification", v)} />
-        <TextField label="PG Qualification" value={form.pg_qualification || ""} onChange={(v) => set("pg_qualification", v)} />
-        <TextField label="Other Diploma" value={form.other_diploma || ""} onChange={(v) => set("other_diploma", v)} />
-        <SelectField label="B.Ed Qualified" value={form.bed_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("bed_qualified", v)} />
-        <TextField label="B.Ed Details" value={form.bed_details || ""} onChange={(v) => set("bed_details", v)} />
-        <SelectField label="M.Ed Qualified" value={form.med_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("med_qualified", v)} />
-        <TextField label="M.Ed Details" value={form.med_details || ""} onChange={(v) => set("med_details", v)} />
-        <SelectField label="PhD Qualified" value={form.phd_qualified || ""} choices={YES_NO_CHOICES} onChange={(v) => set("phd_qualified", v)} />
+        <SelectField
+          label="Qualification"
+          value={form.qualification || ""}
+          choices={QUALIFICATION_CHOICES}
+          labels={QUALIFICATION_LABELS}
+          onChange={(v) => set("qualification", v)}
+        />
+        <TextField label="Extra Qualifications" value={form.extra_qualification || ""} onChange={(v) => set("extra_qualification", v)} />
+        <FileUploadField label="Certificate Upload" value={form.certificate_url || ""} onChange={(v) => set("certificate_url", v)} />
       </Section>
 
       <Section title="Substitute Status">

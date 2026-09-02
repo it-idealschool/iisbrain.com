@@ -19,6 +19,20 @@ export const SPONSOR_LABELS: Record<string, string> = {
   NON_SPONSORED: "Non-Sponsored",
 };
 
+export const QUALIFICATION_CHOICES = [
+  "PLUS_TWO",
+  "DIPLOMA",
+  "GRADUATED",
+  "POST_GRADUATED",
+];
+
+export const QUALIFICATION_LABELS: Record<string, string> = {
+  PLUS_TWO: "+2",
+  DIPLOMA: "Diploma",
+  GRADUATED: "Graduated",
+  POST_GRADUATED: "Post Graduated",
+};
+
 export interface TransportStaff {
   id?: string;
   name: string;
@@ -30,6 +44,7 @@ export interface TransportStaff {
   contact_number?: string;
   email?: string;
   license_number?: string;
+  bus_number?: string;
   route?: string;
   is_substitute?: boolean;
   doj?: string;
@@ -38,14 +53,9 @@ export interface TransportStaff {
   age?: string;
   gender?: string;
   shift?: string;
-  ug_qualification?: string;
-  pg_qualification?: string;
-  other_diploma?: string;
-  bed_qualified?: string;
-  bed_details?: string;
-  med_qualified?: string;
-  med_details?: string;
-  phd_qualified?: string;
+  qualification?: string;
+  extra_qualification?: string;
+  certificate_url?: string;
 }
 
 export interface TransportRoleRequirement {
