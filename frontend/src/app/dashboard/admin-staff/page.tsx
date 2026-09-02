@@ -13,14 +13,10 @@ import {
   QUALIFICATION_CHOICES,
   QUALIFICATION_LABELS,
   AdminStaff,
-  AdminPositionRequirement,
   getAdminStaff,
   createAdminStaff,
   updateAdminStaff,
   deleteAdminStaff,
-  getAdminPositionRequirements,
-  createAdminPositionRequirement,
-  updateAdminPositionRequirement,
 } from "@/lib/adminStaff";
 import {
   TextField,
@@ -53,31 +49,17 @@ const emptyStaff: AdminStaff = {
   notes: "",
 };
 
-function DiffBadge({ diff }: { diff: number }) {
-  const color = diff < 0 ? "var(--aasr-error)" : diff > 0 ? "var(--aasr-gold)" : "var(--aasr-success)";
-  const bg = diff < 0 ? "var(--aasr-error-bg)" : diff > 0 ? "#fbf3de" : "var(--aasr-success-bg)";
-  const text = diff === 0 ? "OK" : diff > 0 ? `+${diff} surplus` : `${diff} shortage`;
-  return (
-    <span className="aasr-badge" style={{ color, background: bg }}>
-      {text}
-    </span>
-  );
-}
-
 export default function AdminStaffPage() {
   const router = useRouter();
   const [staff, setStaff] = useState<AdminStaff[]>([]);
-  const [requirements, setRequirements] = useState<AdminPositionRequirement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
 
   const [form, setForm] = useState<AdminStaff>(emptyStaff);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
-
-  const [reqDrafts, setReqDrafts] = useState<Record<string, { required_count: string; key_responsibilities: string }>>({});
-  const [savingReq, setSavingReq] = useState<string | null>(null);
 
   useEffect(() => {
     getMe()
@@ -90,24 +72,9 @@ export default function AdminStaffPage() {
     setLoading(true);
     setError("");
     try {
-      const [staffData, reqData] = await Promise.all([
-        getAdminStaff(),
-        getAdminPositionRequirements(),
-      ]);
+      const staffData = await getAdminStaff();
       const staffList: AdminStaff[] = Array.isArray(staffData) ? staffData : staffData.results || [];
-      const reqList: AdminPositionRequirement[] = Array.isArray(reqData) ? reqData : reqData.results || [];
       setStaff(staffList);
-      setRequirements(reqList);
-
-      const drafts: Record<string, { required_count: string; key_responsibilities: string }> = {};
-      for (const pos of ADMIN_POSITION_CHOICES) {
-        const existing = reqList.find((r) => r.position === pos);
-        drafts[pos] = {
-          required_count: String(existing?.required_count ?? 0),
-          key_responsibilities: existing?.key_responsibilities ?? "",
-        };
-      }
-      setReqDrafts(drafts);
     } catch {
       setError("Failed to load admin staff data.");
     } finally {
@@ -115,11 +82,35 @@ export default function AdminStaffPage() {
     }
   }
 
-  const currentCountByPosition = useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const s of staff) counts[s.position] = (counts[s.position] || 0) + 1;
-    return counts;
-  }, [staff]);
+  const filteredStaff = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return staff;
+    return staff.filter((s) => {
+      const haystack = [
+        s.name,
+        ADMIN_POSITION_LABELS[s.position] || s.position,
+        s.qatar_id,
+        s.qatar_id_expiry,
+        s.sponsor_status ? SPONSOR_LABELS[s.sponsor_status] || s.sponsor_status : "",
+        s.home_country_number,
+        s.contact_number,
+        s.email,
+        s.doj,
+        s.contract_expiry,
+        s.dob,
+        s.age,
+        s.gender,
+        s.shift,
+        s.qualification ? QUALIFICATION_LABELS[s.qualification] || s.qualification : "",
+        s.extra_qualification,
+        s.notes,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [staff, search]);
 
   function set(field: keyof AdminStaff, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -171,34 +162,6 @@ export default function AdminStaffPage() {
     }
   }
 
-  function updateReqDraft(position: string, field: "required_count" | "key_responsibilities", value: string) {
-    setReqDrafts((prev) => ({ ...prev, [position]: { ...prev[position], [field]: value } }));
-  }
-
-  async function saveRequirement(position: string) {
-    const draft = reqDrafts[position];
-    const existing = requirements.find((r) => r.position === position);
-    setSavingReq(position);
-    try {
-      const payload: AdminPositionRequirement = {
-        position,
-        required_count: Number(draft.required_count) || 0,
-        key_responsibilities: draft.key_responsibilities,
-      };
-      if (existing?.id) {
-        const updated = await updateAdminPositionRequirement(existing.id, payload);
-        setRequirements((prev) => prev.map((r) => (r.position === position ? updated : r)));
-      } else {
-        const created = await createAdminPositionRequirement(payload);
-        setRequirements((prev) => [...prev, created]);
-      }
-    } catch {
-      alert("Failed to save requirement.");
-    } finally {
-      setSavingReq(null);
-    }
-  }
-
   return (
     <div className="aasr-page">
       <div className="aasr-page-header">
@@ -206,7 +169,7 @@ export default function AdminStaffPage() {
           <p className="aasr-eyebrow">Register 04</p>
           <h1 className="aasr-page-title">Admin Staff</h1>
           <p className="aasr-page-subtitle">
-            Administrative &amp; management headcount, targets, and responsibilities.
+            Search, filter, and manage administrative &amp; management staff.
           </p>
         </div>
         <div className="aasr-actions">
@@ -216,75 +179,20 @@ export default function AdminStaffPage() {
         </div>
       </div>
 
+      <div className="aasr-filter-bar">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name, position, Qatar ID, contact, email…"
+          className="aasr-input"
+        />
+      </div>
+
       {error && <p className="aasr-error-banner">{error}</p>}
       {loading ? (
         <p className="aasr-loading-state">Loading…</p>
       ) : (
         <>
-          <section className="aasr-section">
-            <h2 className="aasr-section-title">Position Requirements</h2>
-            <div className="aasr-table-wrap">
-              <table className="aasr-table">
-                <thead>
-                  <tr>
-                    <th>Position</th>
-                    <th>Current</th>
-                    <th>Required</th>
-                    <th>Shortage / Surplus</th>
-                    <th>Key Responsibilities</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ADMIN_POSITION_CHOICES.map((pos) => {
-                    const current = currentCountByPosition[pos] || 0;
-                    const draft = reqDrafts[pos] || { required_count: "0", key_responsibilities: "" };
-                    const required = Number(draft.required_count) || 0;
-                    const diff = current - required;
-                    return (
-                      <tr key={pos}>
-                        <td style={{ whiteSpace: "nowrap", fontWeight: 500 }}>
-                          {ADMIN_POSITION_LABELS[pos]}
-                        </td>
-                        <td>{current}</td>
-                        <td>
-                          <input
-                            type="number"
-                            min={0}
-                            value={draft.required_count}
-                            onChange={(e) => updateReqDraft(pos, "required_count", e.target.value)}
-                            className="aasr-input"
-                            style={{ width: "5rem" }}
-                          />
-                        </td>
-                        <td>
-                          <DiffBadge diff={diff} />
-                        </td>
-                        <td style={{ minWidth: "220px" }}>
-                          <input
-                            value={draft.key_responsibilities}
-                            onChange={(e) => updateReqDraft(pos, "key_responsibilities", e.target.value)}
-                            className="aasr-input"
-                            placeholder="Key responsibilities"
-                          />
-                        </td>
-                        <td>
-                          <button
-                            onClick={() => saveRequirement(pos)}
-                            disabled={savingReq === pos}
-                            className="aasr-btn aasr-btn-ghost aasr-btn-sm"
-                          >
-                            {savingReq === pos ? "Saving…" : "Save"}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
           {editingId && (
           <section className="aasr-section">
             <h2 className="aasr-section-title">Edit Staff Member</h2>
@@ -344,6 +252,8 @@ export default function AdminStaffPage() {
           <section className="aasr-section">
             {staff.length === 0 ? (
               <div className="aasr-table-wrap"><p className="aasr-empty-state">No admin staff added yet.</p></div>
+            ) : filteredStaff.length === 0 ? (
+              <div className="aasr-table-wrap"><p className="aasr-empty-state">No staff match this search.</p></div>
             ) : (
               <div className="aasr-table-wrap">
                 <table className="aasr-table">
@@ -360,7 +270,7 @@ export default function AdminStaffPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {staff.map((s) => (
+                    {filteredStaff.map((s) => (
                       <tr key={s.id}>
                         <td>
                           {s.photo_url ? (

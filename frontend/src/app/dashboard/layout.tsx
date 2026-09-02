@@ -5,13 +5,36 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { getMe, logout } from "@/lib/auth";
 
-const NAV_ITEMS = [
+type NavLeaf = { href: string; label: string; exact: boolean };
+type NavGroup = { label: string; basePath: string; children: NavLeaf[] };
+type NavEntry = NavLeaf | NavGroup;
+
+function isGroup(item: NavEntry): item is NavGroup {
+  return (item as NavGroup).children !== undefined;
+}
+
+const NAV_ITEMS: NavEntry[] = [
   { href: "/dashboard", label: "Overview", exact: true },
   { href: "/dashboard/teachers", label: "Teachers", exact: false },
   { href: "/dashboard/students", label: "Students", exact: false },
   { href: "/dashboard/subjects", label: "Subjects", exact: false },
-  { href: "/dashboard/admin-staff", label: "Admin Staff", exact: false },
-  { href: "/dashboard/transport", label: "Transport", exact: false },
+  {
+    label: "Admin Staff",
+    basePath: "/dashboard/admin-staff",
+    children: [
+      { href: "/dashboard/admin-staff", label: "Admin Staff", exact: true },
+      { href: "/dashboard/admin-staff/requirements", label: "Position Requirements", exact: false },
+    ],
+  },
+  {
+    label: "Transport",
+    basePath: "/dashboard/transport",
+    children: [
+      { href: "/dashboard/transport", label: "Transport Staff", exact: true },
+      { href: "/dashboard/transport/role-requirements", label: "Role Requirements", exact: false },
+      { href: "/dashboard/transport/fleet-summary", label: "Fleet Summary", exact: false },
+    ],
+  },
   { href: "/dashboard/staffing-report", label: "Staffing Report", exact: false },
 ];
 
@@ -29,6 +52,11 @@ export default function DashboardLayout({
   const router = useRouter();
   const [user, setUser] = useState<Me | null>(null);
 
+  const groupBasePaths = NAV_ITEMS.filter(isGroup).map((g) => g.basePath);
+  const [openGroups, setOpenGroups] = useState<string[]>(
+    groupBasePaths.filter((base) => pathname === base || pathname?.startsWith(base + "/"))
+  );
+
   useEffect(() => {
     getMe()
       .then((data) => setUser(data))
@@ -38,9 +66,31 @@ export default function DashboardLayout({
       });
   }, []);
 
+  useEffect(() => {
+    // Auto-open whichever group the current page belongs to.
+    setOpenGroups((prev) => {
+      const active = groupBasePaths.find(
+        (base) => pathname === base || pathname?.startsWith(base + "/")
+      );
+      if (active && !prev.includes(active)) return [...prev, active];
+      return prev;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
   function isActive(href: string, exact: boolean) {
     if (exact) return pathname === href;
     return pathname === href || pathname?.startsWith(href + "/");
+  }
+
+  function isGroupActive(basePath: string) {
+    return pathname === basePath || pathname?.startsWith(basePath + "/");
+  }
+
+  function toggleGroup(basePath: string) {
+    setOpenGroups((prev) =>
+      prev.includes(basePath) ? prev.filter((b) => b !== basePath) : [...prev, basePath]
+    );
   }
 
   function handleLogout() {
@@ -60,20 +110,64 @@ export default function DashboardLayout({
         </div>
 
         <nav className="dashboard-nav">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={
-                "dashboard-nav__item" +
-                (isActive(item.href, item.exact)
-                  ? " dashboard-nav__item--active"
-                  : "")
-              }
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            if (isGroup(item)) {
+              const open = openGroups.includes(item.basePath);
+              return (
+                <div key={item.basePath} className="dashboard-nav__group">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(item.basePath)}
+                    className={
+                      "dashboard-nav__item dashboard-nav__item--toggle" +
+                      (isGroupActive(item.basePath) ? " dashboard-nav__item--active" : "")
+                    }
+                  >
+                    <span>{item.label}</span>
+                    <span
+                      className={
+                        "dashboard-nav__chevron" + (open ? " dashboard-nav__chevron--open" : "")
+                      }
+                      aria-hidden="true"
+                    >
+                      ›
+                    </span>
+                  </button>
+                  {open && (
+                    <div className="dashboard-nav__sub">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className={
+                            "dashboard-nav__subitem" +
+                            (isActive(child.href, child.exact)
+                              ? " dashboard-nav__subitem--active"
+                              : "")
+                          }
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={
+                  "dashboard-nav__item" +
+                  (isActive(item.href, item.exact) ? " dashboard-nav__item--active" : "")
+                }
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="dashboard-sidebar__footer">
@@ -187,6 +281,59 @@ export default function DashboardLayout({
         }
 
         .dashboard-nav__item--active {
+          color: #fff;
+          border-left-color: var(--aasr-gold);
+          background: rgba(255, 255, 255, 0.06);
+        }
+
+        .dashboard-nav__item--toggle {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: transparent;
+          border: none;
+          border-left: 2px solid transparent;
+          cursor: pointer;
+          font-family: inherit;
+        }
+
+        .dashboard-nav__chevron {
+          display: inline-block;
+          font-size: 0.85rem;
+          color: rgba(255, 255, 255, 0.45);
+          transform: rotate(90deg);
+          transition: transform 0.15s ease;
+        }
+
+        .dashboard-nav__chevron--open {
+          transform: rotate(-90deg);
+        }
+
+        .dashboard-nav__sub {
+          display: flex;
+          flex-direction: column;
+          gap: 0.1rem;
+          padding: 0.15rem 0 0.4rem;
+        }
+
+        .dashboard-nav__subitem {
+          display: block;
+          font-size: 0.82rem;
+          font-weight: 450;
+          color: rgba(255, 255, 255, 0.6);
+          padding: 0.5rem 0.7rem 0.5rem 1.6rem;
+          border-left: 2px solid transparent;
+          text-decoration: none;
+          transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+        }
+
+        .dashboard-nav__subitem:hover {
+          color: #fff;
+          background: rgba(255, 255, 255, 0.04);
+        }
+
+        .dashboard-nav__subitem--active {
           color: #fff;
           border-left-color: var(--aasr-gold);
           background: rgba(255, 255, 255, 0.06);
