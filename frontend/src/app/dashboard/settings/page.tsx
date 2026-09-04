@@ -113,7 +113,14 @@ export default function RegistrationSettingsPage() {
                         {isOpen ? "Open" : "Closed"}
                       </strong>
                       {" · "}
-                      <code style={{ fontSize: "0.78rem" }}>{t.formPath}</code>
+                      <a
+                        href={t.formPath}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: "0.78rem", fontFamily: "monospace", color: "var(--aasr-navy-2)", textDecoration: "underline" }}
+                      >
+                        {t.formPath}
+                      </a>
                     </p>
                   </div>
                   <button
