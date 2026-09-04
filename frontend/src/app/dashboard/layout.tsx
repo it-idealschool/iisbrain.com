@@ -36,6 +36,7 @@ const NAV_ITEMS: NavEntry[] = [
     ],
   },
   { href: "/dashboard/staffing-report", label: "Staffing Report", exact: false },
+  { href: "/dashboard/settings", label: "Registration Settings", exact: false },
 ];
 
 type Me = {

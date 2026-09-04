@@ -51,15 +51,20 @@ const emptyStaff: TransportStaff = {
 interface Props {
   staffId?: string;
   initialData?: TransportStaff;
+  /** When true, this is a public self-registration form (no login):
+   * on success it shows a confirmation instead of redirecting into
+   * the (login-gated) dashboard, and offers to register another. */
+  publicMode?: boolean;
 }
 
-export default function TransportForm({ staffId, initialData }: Props) {
+export default function TransportForm({ staffId, initialData, publicMode = false }: Props) {
   const router = useRouter();
   const isEdit = Boolean(staffId);
 
   const [form, setForm] = useState<TransportStaff>(initialData || emptyStaff);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   function set(field: keyof TransportStaff, value: string | boolean) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -79,7 +84,11 @@ export default function TransportForm({ staffId, initialData }: Props) {
       } else {
         await createTransportStaff(form);
       }
-      router.push("/dashboard/transport");
+      if (publicMode) {
+        setSubmitted(true);
+      } else {
+        router.push("/dashboard/transport");
+      }
     } catch (err: any) {
       const data = err.response?.data;
       setError(
@@ -92,6 +101,37 @@ export default function TransportForm({ staffId, initialData }: Props) {
     } finally {
       setSaving(false);
     }
+  }
+
+  if (publicMode && submitted) {
+    return (
+      <div className="aasr-page aasr-page--narrow" style={{ padding: 0, textAlign: "center" }}>
+        <div
+          style={{
+            background: "var(--aasr-success-bg)",
+            border: "1px solid var(--aasr-success)",
+            borderRadius: "0.6rem",
+            padding: "2rem 1.5rem",
+          }}
+        >
+          <h2 style={{ margin: "0 0 0.5rem", color: "var(--aasr-navy)" }}>Registration submitted</h2>
+          <p style={{ margin: 0, color: "var(--aasr-muted)" }}>
+            Thank you, {form.name || "your details"} {form.name ? "have" : "has"} been submitted for review.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setForm(emptyStaff);
+            setSubmitted(false);
+          }}
+          className="aasr-btn aasr-btn-primary"
+          style={{ marginTop: "1.25rem" }}
+        >
+          Register another staff member
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -171,9 +211,11 @@ export default function TransportForm({ staffId, initialData }: Props) {
         <button type="submit" disabled={saving} className="aasr-btn aasr-btn-primary">
           {saving ? "Saving..." : isEdit ? "Save Changes" : "Register Transport Staff"}
         </button>
-        <button type="button" onClick={() => router.push("/dashboard/transport")} className="aasr-btn aasr-btn-secondary">
-          Cancel
-        </button>
+        {!publicMode && (
+          <button type="button" onClick={() => router.push("/dashboard/transport")} className="aasr-btn aasr-btn-secondary">
+            Cancel
+          </button>
+        )}
       </div>
     </form>
   );

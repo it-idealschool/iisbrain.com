@@ -1,10 +1,12 @@
 from rest_framework import viewsets, permissions, filters
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 from .models import Teacher
 from .serializers import TeacherSerializer
+from sitesettings.models import RegistrationSettings
 
 
 class TeacherViewSet(viewsets.ModelViewSet):
@@ -12,6 +14,21 @@ class TeacherViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'emp_no', 'qatar_id', 'email', 'position']
+
+    def get_permissions(self):
+        # Public self-registration: anyone can submit a new teacher record
+        # (subject to the admin's on/off toggle, checked in create()).
+        # Viewing/editing/deleting the list still requires login.
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        return super().get_permissions()
+
+    def create(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            settings_row = RegistrationSettings.load()
+            if not settings_row.teacher_registration_open:
+                raise PermissionDenied('Teacher registration is currently closed.')
+        return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
         qs = Teacher.objects.all().prefetch_related('grade_divisions', 'subject_periods__subject')

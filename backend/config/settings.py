@@ -1,4 +1,4 @@
-﻿"""
+"""
 Django settings for config project.
 """
 import os
@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'students',
     'admin_staff',
     'transport',
+    'sitesettings',
 ]
 
 MIDDLEWARE = [
