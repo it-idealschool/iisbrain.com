@@ -24,6 +24,7 @@ class TeacherSubjectPeriodSerializer(serializers.ModelSerializer):
 class TeacherSerializer(serializers.ModelSerializer):
     grade_divisions = TeacherGradeDivisionSerializer(many=True, required=False)
     subject_periods = TeacherSubjectPeriodSerializer(many=True, required=False)
+    hod_subject_detail = SubjectSerializer(source='hod_subject', read_only=True)
 
     class Meta:
         model = Teacher
@@ -36,6 +37,8 @@ class TeacherSerializer(serializers.ModelSerializer):
             'bed_qualified', 'bed_details', 'med_qualified', 'med_details', 'phd_qualified',
             'position', 'experience_iis', 'experience_overall',
             'class_teacher', 'class_teacher_grade_division',
+            'section_type', 'is_coordinator', 'is_hod', 'hod_subject', 'hod_subject_detail',
+            'leadership_role',
             'total_periods',
             'continue_service', 'discontinue_reason', 'departure_date',
             'grade_divisions', 'subject_periods',

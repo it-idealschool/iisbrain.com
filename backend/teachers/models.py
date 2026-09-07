@@ -22,6 +22,19 @@ SPONSOR_CHOICES = [('SPONSORED', 'Sponsored'), ('NON_SPONSORED', 'Non-Sponsored'
 
 SHIFT_CHOICES = [('MORNING', 'Morning'), ('EVENING', 'Evening'), ('BOTH', 'Both')]
 
+SECTION_TYPE_CHOICES = [
+    ('BOYS', 'Boys Section'),
+    ('GIRLS', 'Girls Section'),
+    ('JUNIOR', 'Junior Section'),
+    ('KG', 'KG Section'),
+]
+
+LEADERSHIP_ROLE_CHOICES = [
+    ('VP', 'Vice Principal'),
+    ('HM', 'Headmaster / Headmistress'),
+    ('AHM', 'Assistant Headmaster / Headmistress'),
+]
+
 
 class Teacher(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -65,6 +78,17 @@ class Teacher(models.Model):
     # Class teacher info
     class_teacher = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
     class_teacher_grade_division = models.CharField(max_length=255, blank=True)
+
+    # School structure — which section this teacher belongs to, and any
+    # leadership / coordination / HOD responsibility they hold there.
+    section_type = models.CharField(max_length=20, choices=SECTION_TYPE_CHOICES, blank=True)
+    is_coordinator = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
+    is_hod = models.CharField(max_length=10, choices=YES_NO_CHOICES, blank=True)
+    hod_subject = models.ForeignKey(
+        Subject, related_name='hods', null=True, blank=True, on_delete=models.SET_NULL,
+    )
+    # e.g. leadership_role=VP + section_type=BOYS  -> "Boys Section VP (Main)"
+    leadership_role = models.CharField(max_length=20, choices=LEADERSHIP_ROLE_CHOICES, blank=True)
 
     total_periods = models.PositiveIntegerField(null=True, blank=True)
 

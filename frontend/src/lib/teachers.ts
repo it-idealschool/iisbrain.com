@@ -19,6 +19,23 @@ export const SPONSOR_LABELS: Record<string, string> = {
   NON_SPONSORED: "Non-Sponsored",
 };
 
+export const SECTION_TYPE_CHOICES = ["BOYS", "GIRLS", "JUNIOR", "KG"];
+
+export const SECTION_TYPE_LABELS: Record<string, string> = {
+  BOYS: "Boys Section",
+  GIRLS: "Girls Section",
+  JUNIOR: "Junior Section",
+  KG: "KG Section",
+};
+
+export const LEADERSHIP_ROLE_CHOICES = ["VP", "HM", "AHM"];
+
+export const LEADERSHIP_ROLE_LABELS: Record<string, string> = {
+  VP: "Vice Principal",
+  HM: "Headmaster / Headmistress",
+  AHM: "Assistant Headmaster / Headmistress",
+};
+
 export interface GradeDivision {
   id?: string;
   grade: string;
@@ -66,6 +83,12 @@ export interface Teacher {
   experience_overall?: string;
   class_teacher?: string;
   class_teacher_grade_division?: string;
+  section_type?: string;
+  is_coordinator?: string;
+  is_hod?: string;
+  hod_subject?: string | null;
+  hod_subject_detail?: { id: string; name: string } | null;
+  leadership_role?: string;
   total_periods?: number | null;
   continue_service?: string;
   discontinue_reason?: string;
@@ -129,4 +152,52 @@ export async function updateTeacher(id: string, data: Teacher) {
 
 export async function deleteTeacher(id: string) {
   await api.delete(`/teachers/${id}/`);
+}
+
+export interface SubjectTeacherCount {
+  subject_id: string;
+  subject_name: string;
+  teacher_count: number;
+  required_teachers: number | null;
+}
+
+export interface TopSubjectTeacher {
+  teacher_id: string;
+  name: string;
+  subject_count: number;
+}
+
+export interface LeadershipHolder {
+  label: string;
+  name: string | null;
+  teacher_id: string | null;
+}
+
+export interface SectionStructure {
+  label: string;
+  total_teachers: number;
+  class_teacher_count: number;
+  class_teachers: { id: string; name: string }[];
+  coordinator_count: number;
+  coordinators: { id: string; name: string }[];
+  leadership: Record<string, LeadershipHolder>;
+}
+
+export interface HodEntry {
+  subject_id: string;
+  subject_name: string;
+  teacher_id: string;
+  teacher_name: string;
+}
+
+export interface TeacherStructureReport {
+  subjects: SubjectTeacherCount[];
+  top_subject_teacher: TopSubjectTeacher | null;
+  sections: Record<string, SectionStructure>;
+  hods: HodEntry[];
+}
+
+export async function getTeacherStructureReport(): Promise<TeacherStructureReport> {
+  const res = await api.get("/teachers/structure-report/");
+  return res.data;
 }
