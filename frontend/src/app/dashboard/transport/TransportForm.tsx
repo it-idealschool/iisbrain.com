@@ -135,7 +135,7 @@ export default function TransportForm({ staffId, initialData, publicMode = false
   }
 
   return (
-    <form onSubmit={handleSubmit} className="aasr-page aasr-page--narrow" style={{ padding: 0 }}>
+    <form onSubmit={handleSubmit} className="aasr-form">
       {error && (
         <p
           style={{
