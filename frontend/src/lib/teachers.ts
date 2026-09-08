@@ -6,6 +6,12 @@ export const GRADE_CHOICES = [
   "GRADE-7", "GRADE-8", "GRADE-9", "GRADE-10", "GRADE-11", "GRADE-12",
 ];
 
+// Matches the division list used in the WordPress "IIS Teacher Data Form" plugin.
+export const DIVISION_CHOICES = [
+  "A", "B", "C", "D", "E", "F", "G", "H", "I",
+  "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+];
+
 export const POSITION_CHOICES = ["KG", "PRT", "TGT", "PGT", "OTHER"];
 
 export const GENDER_CHOICES = ["MALE", "FEMALE", "OTHER"];

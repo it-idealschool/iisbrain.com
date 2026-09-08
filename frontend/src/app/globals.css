@@ -388,6 +388,82 @@ body {
   padding: 0.5rem 0;
 }
 
+/* Grade & Division Handling (checkbox based) */
+.aasr-grade-block {
+  margin-bottom: 0.6rem;
+}
+
+.aasr-grade-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--aasr-navy);
+  cursor: pointer;
+  padding: 0.3rem 0;
+}
+
+.aasr-division-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  background: var(--aasr-bg);
+  border: 1px solid var(--aasr-border);
+  border-radius: var(--aasr-radius-sm);
+  padding: 0.85rem 1rem;
+  margin: 0.35rem 0 0.85rem 1.7rem;
+}
+
+.aasr-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.aasr-check-item label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--aasr-ink);
+  cursor: pointer;
+}
+
+.aasr-check-period-input {
+  width: 4.6rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--aasr-border-strong);
+  border-radius: var(--aasr-radius-sm);
+  font-size: 0.8rem;
+}
+
+/* Subjects & weekly periods handling (checkbox based) */
+.aasr-subject-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.aasr-subject-item {
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed var(--aasr-border);
+}
+
+.aasr-subject-item label {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.88rem;
+  color: var(--aasr-ink);
+  cursor: pointer;
+}
+
+.aasr-subject-period-input {
+  width: 9rem !important;
+  margin: 0.4rem 0 0.15rem 1.75rem;
+}
+
 .aasr-form-footer {
   display: flex;
   gap: 0.75rem;

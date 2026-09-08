@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Teacher,
-  GradeDivision,
-  SubjectPeriod,
   createTeacher,
   updateTeacher,
   GRADE_CHOICES,
+  DIVISION_CHOICES,
   POSITION_CHOICES,
   GENDER_CHOICES,
   YES_NO_CHOICES,
@@ -97,44 +96,85 @@ export default function TeacherForm({ teacherId, initialData, publicMode = false
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  // --- Grade / Division rows ---
-  function addGradeDivision() {
-    set("grade_divisions", [
-      ...(form.grade_divisions || []),
-      { grade: "", division: "", periods_per_week: null },
-    ]);
+  // --- Grade & Division Handling (tick a grade, then tick its divisions) ---
+  // activeGrades tracks which grades are "expanded" (ticked) even before any
+  // division under them has been ticked yet — mirrors the WP plugin behaviour.
+  const [activeGrades, setActiveGrades] = useState<Set<string>>(
+    () => new Set((initialData?.grade_divisions || []).map((gd) => gd.grade))
+  );
+
+  function isGradeChecked(grade: string) {
+    return activeGrades.has(grade);
   }
 
-  function updateGradeDivision(index: number, patch: Partial<GradeDivision>) {
-    const rows = [...(form.grade_divisions || [])];
-    rows[index] = { ...rows[index], ...patch };
-    set("grade_divisions", rows);
+  function toggleGrade(grade: string, checked: boolean) {
+    setActiveGrades((prev) => {
+      const next = new Set(prev);
+      if (checked) {
+        next.add(grade);
+      } else {
+        next.delete(grade);
+      }
+      return next;
+    });
+    if (!checked) {
+      // Unticking a grade drops every division row that belonged to it.
+      set("grade_divisions", (form.grade_divisions || []).filter((gd) => gd.grade !== grade));
+    }
   }
 
-  function removeGradeDivision(index: number) {
-    const rows = [...(form.grade_divisions || [])];
-    rows.splice(index, 1);
-    set("grade_divisions", rows);
+  function isDivisionChecked(grade: string, division: string) {
+    return (form.grade_divisions || []).some((gd) => gd.grade === grade && gd.division === division);
   }
 
-  // --- Subject / Period rows ---
-  function addSubjectPeriod() {
-    set("subject_periods", [
-      ...(form.subject_periods || []),
-      { subject_id: "", periods_per_week: null },
-    ]);
+  function toggleDivision(grade: string, division: string, checked: boolean) {
+    if (checked) {
+      set("grade_divisions", [...(form.grade_divisions || []), { grade, division, periods_per_week: null }]);
+    } else {
+      set(
+        "grade_divisions",
+        (form.grade_divisions || []).filter((gd) => !(gd.grade === grade && gd.division === division))
+      );
+    }
   }
 
-  function updateSubjectPeriod(index: number, patch: Partial<SubjectPeriod>) {
-    const rows = [...(form.subject_periods || [])];
-    rows[index] = { ...rows[index], ...patch };
-    set("subject_periods", rows);
+  function getDivisionPeriods(grade: string, division: string) {
+    const row = (form.grade_divisions || []).find((gd) => gd.grade === grade && gd.division === division);
+    return row?.periods_per_week ?? "";
   }
 
-  function removeSubjectPeriod(index: number) {
-    const rows = [...(form.subject_periods || [])];
-    rows.splice(index, 1);
-    set("subject_periods", rows);
+  function setDivisionPeriods(grade: string, division: string, value: number | null) {
+    set(
+      "grade_divisions",
+      (form.grade_divisions || []).map((gd) =>
+        gd.grade === grade && gd.division === division ? { ...gd, periods_per_week: value } : gd
+      )
+    );
+  }
+
+  // --- Subjects & weekly periods handling (tick a subject, enter periods/week) ---
+  function isSubjectChecked(subjectId: string) {
+    return (form.subject_periods || []).some((sp) => sp.subject_id === subjectId);
+  }
+
+  function toggleSubject(subjectId: string, checked: boolean) {
+    if (checked) {
+      set("subject_periods", [...(form.subject_periods || []), { subject_id: subjectId, periods_per_week: null }]);
+    } else {
+      set("subject_periods", (form.subject_periods || []).filter((sp) => sp.subject_id !== subjectId));
+    }
+  }
+
+  function getSubjectPeriods(subjectId: string) {
+    const row = (form.subject_periods || []).find((sp) => sp.subject_id === subjectId);
+    return row?.periods_per_week ?? "";
+  }
+
+  function setSubjectPeriods(subjectId: string, value: number | null) {
+    set(
+      "subject_periods",
+      (form.subject_periods || []).map((sp) => (sp.subject_id === subjectId ? { ...sp, periods_per_week: value } : sp))
+    );
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -306,101 +346,97 @@ export default function TeacherForm({ teacherId, initialData, publicMode = false
         <FastDateField label="Departure Date" value={form.departure_date || ""} onChange={(v) => set("departure_date", v)} />
       </Section>
 
-      {/* Grade divisions */}
+      {/* Grade & Division Handling */}
       <div className="aasr-section">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.9rem" }}>
-          <h2 className="aasr-section-title" style={{ marginBottom: 0, paddingBottom: 0, border: "none" }}>
-            Grade / Divisions
-          </h2>
-          <button type="button" onClick={addGradeDivision} className="aasr-btn aasr-btn-secondary aasr-btn-sm">
-            + Add Row
-          </button>
-        </div>
-        {(form.grade_divisions || []).map((gd, i) => (
-          <div key={i} className="aasr-repeater-row">
-            <select
-              className="aasr-select"
-              style={{ flex: 1 }}
-              value={gd.grade}
-              onChange={(e) => updateGradeDivision(i, { grade: e.target.value })}
-            >
-              <option value="">Grade</option>
-              {GRADE_CHOICES.map((g) => (
-                <option key={g} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-            <input
-              className="aasr-input"
-              style={{ width: "7rem" }}
-              placeholder="Division"
-              value={gd.division}
-              onChange={(e) => updateGradeDivision(i, { division: e.target.value })}
-            />
-            <input
-              type="number"
-              className="aasr-input"
-              style={{ width: "9rem" }}
-              placeholder="Periods/week"
-              value={gd.periods_per_week ?? ""}
-              onChange={(e) =>
-                updateGradeDivision(i, {
-                  periods_per_week: e.target.value === "" ? null : Number(e.target.value),
-                })
-              }
-            />
-            <button type="button" onClick={() => removeGradeDivision(i)} className="aasr-btn aasr-btn-ghost aasr-btn-sm">
-              Remove
-            </button>
+        <h2 className="aasr-section-title">Grade &amp; Division Handling</h2>
+        <p className="aasr-repeater-empty" style={{ padding: 0, marginBottom: "1rem" }}>
+          Tick a Grade, then tick the Division(s) you handle for that Grade. This keeps each Grade linked to its own
+          Divisions.
+        </p>
+        {GRADE_CHOICES.map((grade) => (
+          <div key={grade} className="aasr-grade-block">
+            <label className="aasr-grade-check">
+              <input
+                type="checkbox"
+                checked={isGradeChecked(grade)}
+                onChange={(e) => toggleGrade(grade, e.target.checked)}
+              />
+              {grade}
+            </label>
+            {isGradeChecked(grade) && (
+              <div className="aasr-division-grid">
+                {DIVISION_CHOICES.map((division) => {
+                  const checked = isDivisionChecked(grade, division);
+                  return (
+                    <div key={division} className="aasr-check-item">
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) => toggleDivision(grade, division, e.target.checked)}
+                        />{" "}
+                        {division}
+                      </label>
+                      {checked && (
+                        <input
+                          type="number"
+                          min={0}
+                          max={45}
+                          className="aasr-check-period-input"
+                          placeholder="periods/wk"
+                          value={getDivisionPeriods(grade, division)}
+                          onChange={(e) =>
+                            setDivisionPeriods(grade, division, e.target.value === "" ? null : Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         ))}
-        {(form.grade_divisions || []).length === 0 && <p className="aasr-repeater-empty">No grade/division rows added.</p>}
       </div>
 
-      {/* Subject periods */}
+      {/* Subjects and number of weekly periods handling */}
       <div className="aasr-section">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.9rem" }}>
-          <h2 className="aasr-section-title" style={{ marginBottom: 0, paddingBottom: 0, border: "none" }}>
-            Subjects / Periods
-          </h2>
-          <button type="button" onClick={addSubjectPeriod} className="aasr-btn aasr-btn-secondary aasr-btn-sm">
-            + Add Row
-          </button>
-        </div>
-        {(form.subject_periods || []).map((sp, i) => (
-          <div key={i} className="aasr-repeater-row">
-            <select
-              className="aasr-select"
-              style={{ flex: 1 }}
-              value={sp.subject_id}
-              onChange={(e) => updateSubjectPeriod(i, { subject_id: e.target.value })}
-            >
-              <option value="">Subject</option>
-              {subjects.map((s) => (
-                <option key={s.id} value={s.id}>
+        <h2 className="aasr-section-title">Subjects and number of weekly periods handling</h2>
+        <p className="aasr-repeater-empty" style={{ padding: 0, marginBottom: "1rem" }}>
+          Subjects Handled (Select the subjects you teach and enter the number of periods per week for each selected
+          subject.)
+        </p>
+        <div className="aasr-subject-list">
+          {subjects.map((s) => {
+            const checked = isSubjectChecked(s.id);
+            return (
+              <div key={s.id} className="aasr-subject-item">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(e) => toggleSubject(s.id, e.target.checked)}
+                  />
                   {s.name}
-                </option>
-              ))}
-            </select>
-            <input
-              type="number"
-              className="aasr-input"
-              style={{ width: "9rem" }}
-              placeholder="Periods/week"
-              value={sp.periods_per_week ?? ""}
-              onChange={(e) =>
-                updateSubjectPeriod(i, {
-                  periods_per_week: e.target.value === "" ? null : Number(e.target.value),
-                })
-              }
-            />
-            <button type="button" onClick={() => removeSubjectPeriod(i)} className="aasr-btn aasr-btn-ghost aasr-btn-sm">
-              Remove
-            </button>
-          </div>
-        ))}
-        {(form.subject_periods || []).length === 0 && <p className="aasr-repeater-empty">No subject/period rows added.</p>}
+                </label>
+                {checked && (
+                  <input
+                    type="number"
+                    min={0}
+                    max={45}
+                    className="aasr-input aasr-subject-period-input"
+                    placeholder="periods/wk"
+                    value={getSubjectPeriods(s.id)}
+                    onChange={(e) => setSubjectPeriods(s.id, e.target.value === "" ? null : Number(e.target.value))}
+                  />
+                )}
+              </div>
+            );
+          })}
+          {subjects.length === 0 && (
+            <p className="aasr-repeater-empty">No subjects configured yet — add subjects from the dashboard.</p>
+          )}
+        </div>
       </div>
 
       <div className="aasr-form-footer">
