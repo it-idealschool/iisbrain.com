@@ -15,7 +15,8 @@ function isGroup(item: NavEntry): item is NavGroup {
 
 const NAV_ITEMS: NavEntry[] = [
   { href: "/dashboard", label: "Overview", exact: true },
-  { href: "/dashboard/hr", label: "HR Management", exact: false },
+  { href: "/dashboard/students", label: "Students", exact: false },
+  { href: "/dashboard/subjects", label: "Subjects", exact: false },
   {
     label: "Teachers",
     basePath: "/dashboard/teachers",
@@ -24,8 +25,6 @@ const NAV_ITEMS: NavEntry[] = [
       { href: "/dashboard/teachers/structure-report", label: "Structure Report", exact: false },
     ],
   },
-  { href: "/dashboard/students", label: "Students", exact: false },
-  { href: "/dashboard/subjects", label: "Subjects", exact: false },
   {
     label: "Admin Staff",
     basePath: "/dashboard/admin-staff",
@@ -43,6 +42,7 @@ const NAV_ITEMS: NavEntry[] = [
       { href: "/dashboard/transport/fleet-summary", label: "Fleet Summary", exact: false },
     ],
   },
+  { href: "/dashboard/hr", label: "HR Management", exact: false },
   { href: "/dashboard/staffing-report", label: "Staffing Report", exact: false },
   { href: "/dashboard/settings", label: "Registration Settings", exact: false },
 ];
