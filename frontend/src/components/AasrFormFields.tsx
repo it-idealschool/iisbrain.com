@@ -246,6 +246,7 @@ export function ShiftField({
 }) {
   const morningChecked = value === "MORNING" || value === "BOTH";
   const eveningChecked = value === "EVENING" || value === "BOTH";
+  const bothChecked = value === "BOTH";
 
   function toggle(which: "MORNING" | "EVENING") {
     const morning = which === "MORNING" ? !morningChecked : morningChecked;
@@ -254,6 +255,10 @@ export function ShiftField({
     else if (morning) onChange("MORNING");
     else if (evening) onChange("EVENING");
     else onChange("");
+  }
+
+  function toggleBoth() {
+    onChange(bothChecked ? "" : "BOTH");
   }
 
   return (
@@ -270,6 +275,10 @@ export function ShiftField({
         <label style={{ display: "flex", gap: "0.4rem", alignItems: "center", fontSize: "0.88rem" }}>
           <input type="checkbox" checked={eveningChecked} onChange={() => toggle("EVENING")} />
           Evening
+        </label>
+        <label style={{ display: "flex", gap: "0.4rem", alignItems: "center", fontSize: "0.88rem" }}>
+          <input type="checkbox" checked={bothChecked} onChange={toggleBoth} />
+          Both
         </label>
       </div>
     </label>
