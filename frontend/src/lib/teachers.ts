@@ -25,6 +25,10 @@ export const SPONSOR_LABELS: Record<string, string> = {
   NON_SPONSORED: "Non-Sponsored",
 };
 
+export const SESSION_CHOICES = ["Morning Session", "Evening Session", "Both"];
+
+export const SECTION_CHOICES = ["KG", "Junior", "Boys", "Girls"];
+
 export const SECTION_TYPE_CHOICES = ["BOYS", "GIRLS", "JUNIOR", "KG"];
 
 export const SECTION_TYPE_LABELS: Record<string, string> = {

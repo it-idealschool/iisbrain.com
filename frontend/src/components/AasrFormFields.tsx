@@ -38,7 +38,10 @@ export function TextField({
 }) {
   return (
     <label className="aasr-label">
-      <span className="aasr-label-text">{label}</span>
+      <span className="aasr-label-text">
+        {label}
+        {required && <span style={{ color: "#c0392b" }}> *</span>}
+      </span>
       <input
         type={type}
         value={value}
@@ -101,18 +104,24 @@ export function SelectField({
   choices,
   labels,
   onChange,
+  required = false,
 }: {
   label: string;
   value: string;
   choices: readonly string[];
   labels?: Record<string, string>;
   onChange: (v: string) => void;
+  required?: boolean;
 }) {
   return (
     <label className="aasr-label">
-      <span className="aasr-label-text">{label}</span>
+      <span className="aasr-label-text">
+        {label}
+        {required && <span style={{ color: "#c0392b" }}> *</span>}
+      </span>
       <select
         value={value}
+        required={required}
         onChange={(e) => onChange(e.target.value)}
         className="aasr-select"
       >

@@ -8,6 +8,8 @@ import {
   updateTeacher,
   GRADE_CHOICES,
   DIVISION_CHOICES,
+  SESSION_CHOICES,
+  SECTION_CHOICES,
   POSITION_CHOICES,
   GENDER_CHOICES,
   YES_NO_CHOICES,
@@ -293,8 +295,8 @@ export default function TeacherForm({ teacherId, initialData, publicMode = false
 
       {/* Section / session */}
       <Section title="Session & Section">
-        <TextField label="Session" value={form.session || ""} onChange={(v) => set("session", v)} />
-        <TextField label="Section" value={form.section || ""} onChange={(v) => set("section", v)} />
+        <SelectField label="Session" value={form.session || ""} choices={SESSION_CHOICES} onChange={(v) => set("session", v)} required />
+        <SelectField label="Section" value={form.section || ""} choices={SECTION_CHOICES} onChange={(v) => set("section", v)} required />
         <SelectField
           label="Teaching Other Section"
           value={form.teaching_other_section || ""}
