@@ -280,7 +280,11 @@ export default function AdminStaffPage() {
                             <span style={{ color: "var(--aasr-muted)", fontSize: "0.75rem" }}>—</span>
                           )}
                         </td>
-                        <td>{s.name}</td>
+                        <td>
+                          <Link href={`/dashboard/admin-staff/${s.id}`} className="aasr-table-link">
+                            {s.name}
+                          </Link>
+                        </td>
                         <td>{ADMIN_POSITION_LABELS[s.position] || s.position}</td>
                         <td className="aasr-mono">{s.contact_number || "—"}</td>
                         <td>{s.email || "—"}</td>

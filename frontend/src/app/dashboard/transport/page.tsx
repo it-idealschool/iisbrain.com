@@ -468,7 +468,11 @@ export default function TransportPage() {
                             <span style={{ color: "var(--aasr-muted)", fontSize: "0.75rem" }}>—</span>
                           )}
                         </td>
-                        <td>{s.name}</td>
+                        <td>
+                          <Link href={`/dashboard/transport/${s.id}`} className="aasr-table-link">
+                            {s.name}
+                          </Link>
+                        </td>
                         <td>{TRANSPORT_ROLE_LABELS[s.role] || s.role}</td>
                         <td>{s.route || "—"}</td>
                         <td className="aasr-mono">{s.contact_number || "—"}</td>

@@ -88,6 +88,11 @@ export async function getAdminStaff() {
   return res.data;
 }
 
+export async function getAdminStaffMember(id: string) {
+  const res = await api.get(`/admin-staff/staff/${id}/`);
+  return res.data;
+}
+
 export async function createAdminStaff(data: AdminStaff) {
   const res = await api.post("/admin-staff/staff/", data);
   return res.data;

@@ -82,6 +82,11 @@ export async function getTransportStaff() {
   return res.data;
 }
 
+export async function getTransportStaffMember(id: string) {
+  const res = await api.get(`/transport/staff/${id}/`);
+  return res.data;
+}
+
 export async function createTransportStaff(data: TransportStaff) {
   const res = await api.post("/transport/staff/", data);
   return res.data;
