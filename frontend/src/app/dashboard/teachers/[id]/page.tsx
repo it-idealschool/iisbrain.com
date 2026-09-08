@@ -52,9 +52,18 @@ function SubjectPeriodsChart({ teacher }: { teacher: Teacher }) {
 function DetailRow({ label, value }: { label: string; value?: string | number | null }) {
   if (value === undefined || value === null || value === "") return null;
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", padding: "0.4rem 0", fontSize: "0.86rem" }}>
-      <span style={{ color: "var(--aasr-muted)" }}>{label}</span>
-      <span style={{ fontWeight: 500 }}>{value}</span>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+        gap: "0.5rem",
+        padding: "0.4rem 0",
+        fontSize: "0.86rem",
+        minWidth: 0,
+      }}
+    >
+      <span style={{ color: "var(--aasr-muted)", minWidth: 0, overflowWrap: "anywhere" }}>{label}</span>
+      <span style={{ fontWeight: 500, minWidth: 0, overflowWrap: "anywhere" }}>{value}</span>
     </div>
   );
 }
