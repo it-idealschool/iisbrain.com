@@ -147,8 +147,8 @@ export function FastDateField({
   label,
   value,
   onChange,
-  minYear = 1950,
-  maxYear = new Date().getFullYear() + 10,
+  minYear,
+  maxYear = new Date().getFullYear() + 15,
 }: {
   label: string;
   value: string; // "YYYY-MM-DD" or ""
@@ -156,13 +156,18 @@ export function FastDateField({
   minYear?: number;
   maxYear?: number;
 }) {
+  // Default: a straightforward 70-year list for every date field, ending 15
+  // years in the future (covers expiry dates) and reaching back 55 years
+  // (covers dates of birth etc.) unless the caller overrides minYear.
+  const resolvedMinYear = minYear ?? maxYear - 69;
+
   const [y, m, d] = value ? value.split("-") : ["", "", ""];
   const year = y || "";
   const month = m ? String(Number(m)) : "";
   const day = d ? String(Number(d)) : "";
 
   const yearOptions: number[] = [];
-  for (let yr = maxYear; yr >= minYear; yr--) yearOptions.push(yr);
+  for (let yr = maxYear; yr >= resolvedMinYear; yr--) yearOptions.push(yr);
 
   function emit(nextYear: string, nextMonth: string, nextDay: string) {
     if (!nextYear || !nextMonth || !nextDay) {
@@ -211,20 +216,22 @@ export function FastDateField({
             </option>
           ))}
         </select>
-        {/* Year: free-typed number input + quick-jump select, so the year
-            can be changed instantly by typing instead of scrolling. */}
-        <input
+        {/* Year: real dropdown list (70 years by default) instead of a
+            free-typed box, so it behaves like a proper "list" everywhere. */}
+        <select
           aria-label={`${label} year`}
-          type="number"
-          className="aasr-input"
-          style={{ flex: "0 0 5.5rem" }}
-          placeholder="Year"
+          className="aasr-select"
+          style={{ flex: "0 0 6rem" }}
           value={year}
-          onChange={(e) => {
-            const v = e.target.value.slice(0, 4);
-            emit(v, month || "1", day || "1");
-          }}
-        />
+          onChange={(e) => emit(e.target.value, month || "1", day || "1")}
+        >
+          <option value="">Year</option>
+          {yearOptions.map((yr) => (
+            <option key={yr} value={yr}>
+              {yr}
+            </option>
+          ))}
+        </select>
       </div>
     </label>
   );

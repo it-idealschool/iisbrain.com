@@ -180,7 +180,7 @@ export default function TransportForm({ staffId, initialData, publicMode = false
         <TextField label="Route" value={form.route || ""} onChange={(v) => set("route", v)} />
         <FastDateField label="Date of Joining" value={form.doj || ""} onChange={(v) => set("doj", v)} />
         <FastDateField label="Contract Expiry" value={form.contract_expiry || ""} onChange={(v) => set("contract_expiry", v)} />
-        <FastDateField label="Date of Birth" value={form.dob || ""} onChange={(v) => set("dob", v)} minYear={1950} />
+        <FastDateField label="Date of Birth" value={form.dob || ""} onChange={(v) => set("dob", v)} />
         <TextField label="Age" value={form.age || ""} onChange={(v) => set("age", v)} />
         <SelectField label="Gender" value={form.gender || ""} choices={GENDER_CHOICES} onChange={(v) => set("gender", v)} />
         <ShiftField value={form.shift || ""} onChange={(v) => set("shift", v)} />

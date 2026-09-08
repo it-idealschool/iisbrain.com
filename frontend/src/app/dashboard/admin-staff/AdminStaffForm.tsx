@@ -161,13 +161,7 @@ export default function AdminStaffForm({ staffId, initialData, publicMode = fals
           onChange={(v) => set("position", v)}
         />
         <TextField label="Qatar ID" value={form.qatar_id || ""} onChange={(v) => set("qatar_id", v)} />
-        <FastDateField
-          label="Qatar ID Expiry Date"
-          value={form.qatar_id_expiry || ""}
-          onChange={(v) => set("qatar_id_expiry", v)}
-          minYear={new Date().getFullYear() - 5}
-          maxYear={new Date().getFullYear() + 15}
-        />
+        <FastDateField label="Qatar ID Expiry Date" value={form.qatar_id_expiry || ""} onChange={(v) => set("qatar_id_expiry", v)} />
         <SelectField
           label="Sponsor Status"
           value={form.sponsor_status || ""}
@@ -179,13 +173,7 @@ export default function AdminStaffForm({ staffId, initialData, publicMode = fals
         <TextField label="Home Country Number" value={form.home_country_number || ""} onChange={(v) => set("home_country_number", v)} />
         <TextField label="Email" type="email" value={form.email || ""} onChange={(v) => set("email", v)} />
         <FastDateField label="Date of Joining" value={form.doj || ""} onChange={(v) => set("doj", v)} />
-        <FastDateField
-          label="Date of Birth"
-          value={form.dob || ""}
-          onChange={(v) => set("dob", v)}
-          minYear={1950}
-          maxYear={new Date().getFullYear() - 15}
-        />
+        <FastDateField label="Date of Birth" value={form.dob || ""} onChange={(v) => set("dob", v)} />
         <TextField label="Age" value={form.age || ""} onChange={(v) => set("age", v)} />
         <SelectField label="Gender" value={form.gender || ""} choices={GENDER_CHOICES} onChange={(v) => set("gender", v)} />
         <ShiftField value={form.shift || ""} onChange={(v) => set("shift", v)} />
