@@ -6,7 +6,7 @@ class TransportStaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransportStaff
         fields = [
-            'id', 'name', 'role', 'photo_url', 'qatar_id', 'sponsor_status',
+            'id', 'name', 'role', 'photo_url', 'qatar_id', 'qatar_id_expiry', 'sponsor_status',
             'home_country_number', 'contact_number', 'email', 'license_number',
             'bus_number', 'route', 'is_substitute', 'doj', 'contract_expiry', 'dob', 'age',
             'gender', 'shift',

@@ -228,6 +228,11 @@ export default function DashboardPage() {
       <section className="aasr-section" style={{ marginTop: "1.5rem" }}>
         <h2 className="aasr-section-title">Manage</h2>
         <div className="aasr-stat-grid">
+          <Link href="/dashboard/hr" className="aasr-stat-card">
+            <p className="aasr-stat-card__label">HR</p>
+            <p className="aasr-stat-card__title">HR Management</p>
+            <p className="aasr-stat-card__desc">Search all staff and track Qatar ID / contract expiry.</p>
+          </Link>
           <Link href="/dashboard/teachers" className="aasr-stat-card">
             <p className="aasr-stat-card__label">Register 01</p>
             <p className="aasr-stat-card__title">Teachers</p>

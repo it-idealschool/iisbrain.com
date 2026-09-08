@@ -29,7 +29,7 @@ class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = [
-            'id', 'name', 'emp_no', 'photo_url', 'qatar_id', 'sponsor_status',
+            'id', 'name', 'emp_no', 'photo_url', 'qatar_id', 'qatar_id_expiry', 'sponsor_status',
             'home_country_number', 'email', 'contact_number',
             'doj', 'contract_expiry', 'dob', 'age', 'gender', 'shift',
             'session', 'section', 'teaching_other_section', 'other_section_details',

@@ -29,6 +29,7 @@ const emptyStaff: TransportStaff = {
   role: TRANSPORT_ROLE_CHOICES[0],
   photo_url: "",
   qatar_id: "",
+  qatar_id_expiry: "",
   sponsor_status: "",
   home_country_number: "",
   contact_number: "",
@@ -163,6 +164,7 @@ export default function TransportForm({ staffId, initialData, publicMode = false
           onChange={(v) => set("role", v)}
         />
         <TextField label="Qatar ID" value={form.qatar_id || ""} onChange={(v) => set("qatar_id", v)} />
+        <FastDateField label="Qatar ID Expiry Date" value={form.qatar_id_expiry || ""} onChange={(v) => set("qatar_id_expiry", v)} />
         <SelectField
           label="Sponsor Status"
           value={form.sponsor_status || ""}

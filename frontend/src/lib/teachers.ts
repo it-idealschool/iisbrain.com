@@ -56,6 +56,7 @@ export interface Teacher {
   emp_no: string;
   photo_url?: string;
   qatar_id?: string;
+  qatar_id_expiry?: string;
   sponsor_status?: string;
   home_country_number?: string;
   email?: string;

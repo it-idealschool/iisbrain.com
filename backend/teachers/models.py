@@ -44,6 +44,7 @@ class Teacher(models.Model):
     emp_no = models.CharField(max_length=100, unique=True)
     photo_url = models.TextField(blank=True)  # data-URL (base64) or hosted image URL
     qatar_id = models.CharField(max_length=100, blank=True)
+    qatar_id_expiry = models.DateField(null=True, blank=True)
     sponsor_status = models.CharField(max_length=20, choices=SPONSOR_CHOICES, blank=True)
     home_country_number = models.CharField(max_length=100, blank=True)
     email = models.EmailField()

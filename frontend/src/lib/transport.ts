@@ -39,6 +39,7 @@ export interface TransportStaff {
   role: string;
   photo_url?: string;
   qatar_id?: string;
+  qatar_id_expiry?: string;
   sponsor_status?: string;
   home_country_number?: string;
   contact_number?: string;

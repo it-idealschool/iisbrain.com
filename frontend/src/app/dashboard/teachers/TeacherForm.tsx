@@ -32,6 +32,7 @@ const emptyTeacher: Teacher = {
   emp_no: "",
   photo_url: "",
   qatar_id: "",
+  qatar_id_expiry: "",
   sponsor_status: "",
   home_country_number: "",
   email: "",
@@ -232,6 +233,7 @@ export default function TeacherForm({ teacherId, initialData, publicMode = false
         <TextField label="Name" value={form.name} onChange={(v) => set("name", v)} required />
         <TextField label="Employee No" value={form.emp_no} onChange={(v) => set("emp_no", v)} required />
         <TextField label="Qatar ID" value={form.qatar_id || ""} onChange={(v) => set("qatar_id", v)} />
+        <FastDateField label="Qatar ID Expiry Date" value={form.qatar_id_expiry || ""} onChange={(v) => set("qatar_id_expiry", v)} />
         <SelectField
           label="Sponsor Status"
           value={form.sponsor_status || ""}
