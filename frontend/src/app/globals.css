@@ -88,9 +88,10 @@ body {
 /* ---------------------------------------------------------------- */
 
 .aasr-page {
-  max-width: 96rem;
+  max-width: none;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem 1.75rem 4rem;
+  padding: 2rem 2rem 4rem;
 }
 
 .aasr-page--narrow {

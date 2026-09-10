@@ -140,7 +140,7 @@ export default function SubjectsPage() {
   }
 
   return (
-    <div className="aasr-page aasr-page--narrow">
+    <div className="aasr-page">
       <div className="aasr-page-header">
         <div>
           <p className="aasr-eyebrow">Register 03</p>
