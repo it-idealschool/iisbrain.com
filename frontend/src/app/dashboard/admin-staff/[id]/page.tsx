@@ -54,7 +54,7 @@ export default function AdminStaffProfilePage() {
   if (!staff) return null;
 
   return (
-    <div className="aasr-page aasr-page--narrow print:mt-0">
+    <div className="aasr-page print:mt-0">
       <style jsx global>{`
         @media print {
           .no-print { display: none !important; }

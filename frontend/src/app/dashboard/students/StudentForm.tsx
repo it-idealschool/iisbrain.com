@@ -66,7 +66,7 @@ export default function StudentForm({ studentId, initialData }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="aasr-page--narrow"
+      className="aasr-form"
       style={{ margin: "0 auto", paddingBottom: "4rem" }}
     >
       {error && <p className="aasr-error-banner">{error}</p>}

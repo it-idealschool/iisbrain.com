@@ -102,7 +102,7 @@ export default function TeacherProfilePage() {
   const totalWeeklyPeriods = (teacher.subject_periods || []).reduce((sum, sp) => sum + (sp.periods_per_week || 0), 0);
 
   return (
-    <div className="aasr-page aasr-page--narrow print:mt-0">
+    <div className="aasr-page print:mt-0">
       <style jsx global>{`
         @media print {
           .no-print { display: none !important; }
