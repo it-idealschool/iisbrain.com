@@ -15,6 +15,7 @@ function isGroup(item: NavEntry): item is NavGroup {
 
 const NAV_ITEMS: NavEntry[] = [
   { href: "/dashboard", label: "Overview", exact: true },
+  { href: "/dashboard/analytics", label: "School Analytics", exact: false },
   { href: "/dashboard/students", label: "Students", exact: false },
   { href: "/dashboard/subjects", label: "Subjects", exact: false },
   {

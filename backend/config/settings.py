@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'admin_staff',
     'transport',
     'sitesettings',
+    'analytics',
 ]
 
 MIDDLEWARE = [
