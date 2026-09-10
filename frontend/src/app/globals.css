@@ -136,13 +136,13 @@ body {
 }
 
 .aasr-page-title {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(1.35rem, 1.15rem + 0.8vw, 1.6rem);
-  font-weight: 700;
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 1.85rem);
+  font-weight: 600;
   color: var(--aasr-ink);
   margin: 0;
   line-height: 1.2;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .aasr-page-subtitle {
@@ -338,13 +338,14 @@ body {
 }
 
 .aasr-section-title {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
   color: var(--aasr-ink);
   margin: 0 0 1.25rem;
   padding-bottom: 0.65rem;
   border-bottom: 1px solid var(--aasr-border);
+  letter-spacing: -0.01em;
 }
 
 .aasr-field-grid {
@@ -688,9 +689,9 @@ body {
 }
 
 .aasr-stat-card__title {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 1.55rem;
+  font-weight: 500;
   color: var(--aasr-ink);
   margin: 0 0 0.35rem;
   letter-spacing: -0.01em;
@@ -768,9 +769,9 @@ body {
 }
 
 .dashboard-sidebar__crest {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 600;
   width: 2.3rem;
   height: 2.3rem;
   border-radius: 10px;
@@ -783,11 +784,11 @@ body {
 }
 
 .dashboard-sidebar__title {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 600;
   margin: 0;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.005em;
   color: var(--aasr-ink);
 }
 
@@ -985,8 +986,8 @@ body {
 }
 
 .dashboard-topbar__brand {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 700;
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-weight: 600;
   color: var(--aasr-ink);
-  font-size: 1rem;
+  font-size: 1.05rem;
 }

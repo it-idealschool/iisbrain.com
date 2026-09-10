@@ -112,7 +112,7 @@ export default function TeacherStructureReportPage() {
                 if (!sec) return null;
                 return (
                   <div className="aasr-card" key={code} style={{ padding: "1.3rem 1.4rem" }}>
-                    <h3 style={{ margin: "0 0 0.75rem", fontWeight: 700 }}>
+                    <h3 style={{ margin: "0 0 0.75rem", fontFamily: "var(--font-source-serif), Georgia, serif", fontWeight: 600 }}>
                       {sec.label}
                     </h3>
                     <p style={{ margin: "0 0 0.4rem", fontSize: "0.85rem", color: "var(--aasr-muted)" }}>
