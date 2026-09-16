@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/analytics/', include('analytics.urls')),
     path('api/governance/', include('governance.urls')),
     path('api/inventory/', include('inventory.urls')),
+    path('api/hr/', include('hr_management.urls')),
 ]
 
 if settings.DEBUG:

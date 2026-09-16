@@ -43,7 +43,15 @@ const NAV_ITEMS: NavEntry[] = [
       { href: "/dashboard/transport/fleet-summary", label: "Fleet Summary", exact: false },
     ],
   },
-  { href: "/dashboard/hr", label: "HR Management", exact: false },
+  {
+    label: "HR Management",
+    basePath: "/dashboard/hr",
+    children: [
+      { href: "/dashboard/hr", label: "Staff Directory", exact: true },
+      { href: "/dashboard/hr/profiles", label: "Employee Profiles", exact: false },
+      { href: "/dashboard/hr/requests", label: "Leave & Services", exact: false },
+    ],
+  },
   {
     label: "Store Management",
     basePath: "/dashboard/store",

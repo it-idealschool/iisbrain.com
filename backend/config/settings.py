@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'analytics',
     'governance',
     'inventory',
+    'hr_management',
 ]
 
 MIDDLEWARE = [

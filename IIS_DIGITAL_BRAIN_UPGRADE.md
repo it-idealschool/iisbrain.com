@@ -13,6 +13,12 @@ This version extends the existing AASR portal without replacing its design or ex
 - Request decision history and stock issue transactions
 - New staff, facility manager and store manager roles
 - Responsive dashboards and workflow status presentation
+- Advanced employee master profiles and annual leave entitlement
+- Leave approval path: Staff → HOS → HR → Principal
+- NOC, employment certificate, salary certificate, Qatar ID renewal and contract renewal requests
+- HR service approval path: Staff → HR → Principal
+- Academic-year appraisal records, performance scores, strengths, development areas and goals
+- HR contract and Qatar ID expiry monitoring
 
 ## Local upgrade
 
@@ -43,7 +49,7 @@ NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api npm run dev
 4. Keep `CORS_ALLOW_ALL_ORIGINS=False` in production.
 5. Move from SQLite to managed PostgreSQL before entering live school records.
 6. Configure persistent object storage for uploaded policy and school document files. Render's local disk is not suitable for permanent institutional documents unless a persistent disk is explicitly attached.
-7. Assign workflow roles in Django Admin: `department_head`, `facility_manager`, `principal`, and `store_manager`.
+7. Assign workflow roles in Django Admin: `department_head`, `hr`, `facility_manager`, `principal`, and `store_manager`.
 
 ## Important production work remaining
 
