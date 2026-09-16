@@ -26,14 +26,11 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True)
-    # Optional: assign a role at registration time (e.g. by an admin-facing flow)
-    role = serializers.ChoiceField(choices=Role.ROLE_CHOICES, write_only=True, required=False)
-
     class Meta:
         model = User
         fields = (
             'username', 'email', 'first_name', 'last_name', 'phone',
-            'password', 'password2', 'role',
+            'password', 'password2',
         )
 
     def validate(self, attrs):
@@ -42,15 +39,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        role_name = validated_data.pop('role', None)
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
         user.save()
 
-        if role_name:
-            role, _ = Role.objects.get_or_create(name=role_name)
-            UserRole.objects.create(user=user, role=role)
+        role, _ = Role.objects.get_or_create(name=Role.STAFF)
+        UserRole.objects.create(user=user, role=role)
 
         return user
 
