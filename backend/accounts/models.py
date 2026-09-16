@@ -11,6 +11,9 @@ class Role(models.Model):
     ACADEMIC_COORDINATOR = 'academic_coordinator'
     DEPARTMENT_HEAD = 'department_head'
     VIEWER_AUDITOR = 'viewer_auditor'
+    STAFF = 'staff'
+    FACILITY_MANAGER = 'facility_manager'
+    STORE_MANAGER = 'store_manager'
 
     ROLE_CHOICES = [
         (SUPER_ADMIN, 'Super Admin'),
@@ -20,6 +23,9 @@ class Role(models.Model):
         (ACADEMIC_COORDINATOR, 'Academic Coordinator'),
         (DEPARTMENT_HEAD, 'Department Head'),
         (VIEWER_AUDITOR, 'Viewer/Auditor'),
+        (STAFF, 'Staff'),
+        (FACILITY_MANAGER, 'Facility Manager'),
+        (STORE_MANAGER, 'Store Manager'),
     ]
 
     name = models.CharField(max_length=50, choices=ROLE_CHOICES, unique=True)

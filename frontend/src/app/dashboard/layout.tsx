@@ -44,6 +44,15 @@ const NAV_ITEMS: NavEntry[] = [
     ],
   },
   { href: "/dashboard/hr", label: "HR Management", exact: false },
+  {
+    label: "Store Management",
+    basePath: "/dashboard/store",
+    children: [
+      { href: "/dashboard/store", label: "Inventory", exact: true },
+      { href: "/dashboard/store/requests", label: "Item Requests", exact: false },
+    ],
+  },
+  { href: "/dashboard/documents", label: "Policies & Documents", exact: false },
   { href: "/dashboard/staffing-report", label: "Staffing Report", exact: false },
   { href: "/dashboard/settings", label: "Registration Settings", exact: false },
 ];

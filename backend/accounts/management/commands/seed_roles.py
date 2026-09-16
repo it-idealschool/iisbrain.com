@@ -14,6 +14,9 @@ class Command(BaseCommand):
             (Role.ACADEMIC_COORDINATOR, 'Academic setup and allocation'),
             (Role.DEPARTMENT_HEAD, 'Department-level oversight'),
             (Role.VIEWER_AUDITOR, 'Read-only access with audit visibility'),
+            (Role.STAFF, 'Submit and track staff service and store requests'),
+            (Role.FACILITY_MANAGER, 'Review facility and inventory requests'),
+            (Role.STORE_MANAGER, 'Manage stock and issue approved items'),
         ]
 
         for name, description in role_data:
